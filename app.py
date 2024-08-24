@@ -2,8 +2,23 @@ import streamlit as st
 import pymongo
 import pandas as pd
 import plotly.express as px
+from bson import ObjectId
 
 st.set_page_config(page_title="EffinTrak Analytics")
+
+query_params = st.query_params
+user_id = query_params.get("user_id", [None])[0]
+
+if not user_id:
+    st.error("No user ID provided. Please access this dashboard through the main application.")
+    st.stop()
+
+try:
+    user_id = ObjectId(user_id)
+except:
+    st.error("Invalid user ID format.")
+    st.stop()
+
 
 # Connect to MongoDB
 @st.cache_resource
@@ -24,13 +39,19 @@ collection = db[st.secrets.db_credentials.collection_name]
 # Fetch data from MongoDB
 @st.cache_data
 def get_data():
-    items = collection.find()
+    items = collection.find({"user": user_id })
     df = pd.DataFrame(list(items))
+    if df.empty:
+        st.warning(f"No data found for the Selected User.")
+        st.stop()
     df['date'] = pd.to_datetime(df['date'])
     df = df[df['categoryName'] != 'Home']
     return df
 
 df = get_data()
+
+
+
 
 # 1. Pie Chart
 st.title("Comprehensive Expense Analysis Dashboard")
@@ -42,7 +63,13 @@ st.sidebar.title("Dashboard Controls")
 st.sidebar.header("Filters")
 categories = st.sidebar.multiselect("Select Categories", df['categoryName'].unique())
 payees = st.sidebar.multiselect("Select Payees", df['paidTo'].unique())
-date_range = st.sidebar.slider("Select Date Range", df['date'].min().date(), df['date'].max().date(), (df['date'].min().date(), df['date'].max().date()))
+min_date = df['date'].min().date()
+max_date = df['date'].max().date()
+if min_date == max_date:
+    # If they are, add a small timedelta to the maximum date to ensure it's greater
+    max_date = max_date + pd.Timedelta(days=1)
+
+date_range = st.sidebar.slider("Select Date Range", min_date, max_date, (min_date, max_date))
 df_filtered = df[
     (df['date'] >= pd.Timestamp(date_range[0])) & 
     (df['date'] <= pd.Timestamp(date_range[1])) &

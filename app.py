@@ -21,7 +21,7 @@ except:
 
 
 # Connect to MongoDB
-@st.cache_resource
+
 def init_connection():
     user_name = st.secrets.db_credentials.username
     password = st.secrets.db_credentials.password
@@ -37,7 +37,7 @@ db = client[st.secrets.db_credentials.db_name]
 collection = db[st.secrets.db_credentials.collection_name]
 
 # Fetch data from MongoDB
-@st.cache_data
+
 def get_data():
     items = collection.find({"user": user_id })
     df = pd.DataFrame(list(items))

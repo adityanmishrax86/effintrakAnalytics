@@ -7,7 +7,7 @@ from bson import ObjectId
 st.set_page_config(page_title="EffinTrak Analytics")
 
 query_params = st.query_params
-user_id = query_params.get("user_id", [None])[0]
+user_id = query_params.get("user_id", [None])
 
 if not user_id:
     st.error("No user ID provided. Please access this dashboard through the main application.")

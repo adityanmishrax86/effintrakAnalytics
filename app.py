@@ -2,13 +2,11 @@ import streamlit as st
 import pymongo
 import pandas as pd
 import plotly.express as px
-import socket
-hostname = socket.gethostname()
-## getting the IP address using socket.gethostbyname() method
-ip_address = socket.gethostbyname(hostname)
-## printing the hostname and ip_address
-print(f"Hostname: {hostname}")
-print(f"IP Address: {ip_address}")
+import urllib.request
+
+external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+
+print(external_ip)
 
 
 st.set_page_config(page_title="EffinTrak Analytics")

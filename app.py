@@ -2,9 +2,9 @@ import streamlit as st
 import pymongo
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
-import statsmodels.api as sm
-from datetime import datetime
+
+
+st.set_page_config(page_title="EffinTrak Analytics")
 
 # Connect to MongoDB
 @st.cache_resource
@@ -35,8 +35,6 @@ df = get_data()
 
 # 1. Pie Chart
 st.title("Comprehensive Expense Analysis Dashboard")
-
-st.set_page_config(page_title="EffinTrak Analytics")
 
 st.sidebar.title("Dashboard Controls")
 

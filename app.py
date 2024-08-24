@@ -2,12 +2,6 @@ import streamlit as st
 import pymongo
 import pandas as pd
 import plotly.express as px
-import urllib.request
-
-external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-
-print(external_ip)
-
 
 st.set_page_config(page_title="EffinTrak Analytics")
 

@@ -14,7 +14,6 @@ if not user_id:
     st.stop()
 
 try:
-    st.write(user_id)
     user_id = ObjectId(user_id)
 except:
     st.error("Invalid user ID format.")
